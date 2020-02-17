@@ -10,7 +10,7 @@ client = discord.Client()
 beano = "<:beano:670475306515169280>"
 
 
-react_cond = re.compile(".*[b🅱️ ]ean.*")
+react_cond = re.compile(r".*[b🅱️ B]\s*[eE]\s*[aA]\s*[nN].*")
 bean_role = None
 
 @client.event
