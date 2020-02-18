@@ -9,12 +9,15 @@ client = discord.Client()
 #to get a specific reaction, simply type \:reaction: in your server
 beano = "<:beano:670475306515169280>"
 piston = "<:piston:679156033800634408>"
+biston = "<:biston:679165163194286081>"
 
 
 bean_cond = re.compile(r".*[b🅱️ B]\s*[eE]\s*[aA]\s*[nN].*")
 bean_role = None
 
-piston_cond = re.compile(r".*[🅱️ Pp]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
+piston_cond = re.compile(r".*[Pp]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
+
+biston_cond = re.compile(r".*[Bb🅱️ ]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
 
 @client.event
 async def on_ready():
@@ -34,9 +37,14 @@ async def on_message(mesg):
     global bean_role
     text = mesg.content
     roles = mesg.author.roles
-    if (bean_cond.match(text) or (bean_role in roles) or mesg.channel.name == "beano"):
+    bean = bean_cond.match(text) or (bean_role in roles) or mesg.channel.name == "beano"
+    pist = piston_cond.match(text)
+    bist = biston_cond.match(text) or (bean and pist)
+    if (bean):
         await mesg.add_reaction(beano)
-    if (piston_cond.match(text)):
+    if (pist):
         await mesg.add_reaction(piston)
+    if (bist):
+        await mesg.add_reaction(biston)
 
 client.run(token)
