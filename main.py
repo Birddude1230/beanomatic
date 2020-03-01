@@ -12,12 +12,12 @@ piston = "<:piston:679156033800634408>"
 biston = "<:biston:679165163194286081>"
 
 
-bean_cond = re.compile(r".*[b🅱️ B]\s*[eE]\s*[aA]\s*[nN].*")
+bean_cond = re.compile(r".*[Bb🅱️]\s*[eE]\s*[aA]\s*[nN].*")
 bean_role = None
 
 piston_cond = re.compile(r".*[Pp]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
 
-biston_cond = re.compile(r".*[Bb🅱️ ]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
+biston_cond = re.compile(r".*[Bb🅱️]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
 
 @client.event
 async def on_ready():
