@@ -111,13 +111,15 @@ async def talkative(message):
     async with message.channel.typing():
         senders = {}
         async for m in message.channel.history(limit=m):
+            if m.author.id == None:
+                continue
             if (m.author.id in senders):
                 senders[m.author.id] += 1
             else:
                 senders[m.author.id] = 1
         msend = sorted([(i, senders[i]) for i in senders], key=(lambda x: x[1]), reverse=True)
         tot = list(map(lambda x: (message.guild.get_member(x[0]), x[1]), msend[:n]))
-        tot = list(map(lambda y: ((y[0].nick or y[0].name), y[1]), tot))
+        tot = list(map(lambda y: ((y[0].nick or y[0].name if not y[0] == None else "Unknown User"), y[1]), tot))
         rmax = max(len(str(n)) + 1, len("Rank"))
         nmax = max(len(max(tot, key=(lambda x: len(x[0])))[0]), len("Name"))
         cmax = len(str(max(tot, key=(lambda x: len(str(x[1]))))[1]))
