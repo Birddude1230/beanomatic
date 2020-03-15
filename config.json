@@ -1,0 +1,22 @@
+{
+    "prefix":"b!",
+    "playing":"with beano",
+    "reactions":[
+        {
+            "name":"beano",
+            "reaction":"<:beano:670475306515169280>",
+            "pattern":".*[Bb🅱️]\\s*[eE]\\s*[aA]\\s*[nN].*",
+            "channel":"beano"
+        },
+        {
+            "name":"piston",
+            "reaction":"<:piston:679156033800634408>",
+            "pattern":".*[Pp]\\s*[iI]\\s*[sS]\\s*[tT]\\s*[oO]\\s*[nN]\\.*"
+        },
+        {
+            "name":"biston",
+            "reaction":"<:biston:679165163194286081>",
+            "pattern":".*[Bb🅱️]\\s*[iI]\\s*[sS]\\s*[tT]\\s*[oO]\\s*[nN]\\.*"
+        }
+    ]
+}

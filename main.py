@@ -1,50 +1,50 @@
-import os, re
+import os, re, json
 
 import discord
+from react import react, config_react
+import command
 
 token = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
 
-#to get a specific reaction, simply type \:reaction: in your server
-beano = "<:beano:670475306515169280>"
-piston = "<:piston:679156033800634408>"
-biston = "<:biston:679165163194286081>"
+def read_config():
+    with open("config.json", "r") as f:
+        return json.load(f)
 
+def write_config(config):
+    with open("config.json", "r") as f:
+        json.dump(config, f)
+        
+def build_commands():
+    basenames = list(filter(lambda x: x[:2] != "__", dir(command)))
+    return {config["prefix"] + i : getattr(command, i) for i in basenames}
 
-bean_cond = re.compile(r".*[Bb🅱️]\s*[eE]\s*[aA]\s*[nN].*")
-bean_role = None
-
-piston_cond = re.compile(r".*[Pp]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
-
-biston_cond = re.compile(r".*[Bb🅱️]\s*[iI]\s*[sS]\s*[tT]\s*[oO]\s*[nN]\.*")
+config = read_config()
+reacc = config_react(config)
+cmds = build_commands()
 
 @client.event
 async def on_ready():
-    global bean_role
+    global config
     print("Starting up...")
-    for g in client.guilds:
-        for i in g.roles:
-            if i.name == "beaned":
-                bean_role = i
-                print(f"Got beaned role on server {g.name}")
-    game = discord.Game("with beano")
-    await client.change_presence(status=discord.Status.online, activity=game)
+    print(f"Joined: {', '.join([x.name for x in client.guilds])}")
+    if "playing" in config:
+        game = discord.Game(config["playing"])
+        await client.change_presence(status=discord.Status.online, activity=game)
     print("Done starting!")
+
 
 @client.event
 async def on_message(mesg):
-    global bean_role
-    text = mesg.content
-    roles = mesg.author.roles
-    bean = bean_cond.match(text) or (bean_role in roles) or mesg.channel.name == "beano"
-    pist = piston_cond.match(text)
-    bist = biston_cond.match(text) or (bean and pist)
-    if (bean):
-        await mesg.add_reaction(beano)
-    if (pist):
-        await mesg.add_reaction(piston)
-    if (bist):
-        await mesg.add_reaction(biston)
+    global config
+    global reacc
+    global cmds
+    if mesg.content != "" and mesg.author != mesg.guild.me:
+        first = mesg.content.split()[0]
+        if first in cmds and mesg.author != mesg.guild.me:
+            await cmds[first](mesg)
+            
+    await react(mesg, reacc)
 
 client.run(token)
