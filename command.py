@@ -70,11 +70,11 @@ async def wordfreq(message):
     """Find the most frequent significant word in the past n messages
 
     Usage: wordfreq [n]
-    - n defaults to 200 and has a max of 1000"""
+    - n defaults to 200 and has a max of 1,000"""
     global sr
     arg = message.content.split(" ")
     if len(arg) < 2:
-        n = 200
+        n = 1000
     else:
         n = min(1000, int(arg[1]))
     async with message.channel.typing():
@@ -92,3 +92,36 @@ async def wordfreq(message):
         ns = len(max(names, key=len))
         datastr = "\n".join(map(lambda x: f"{x[0]:>{ns}}: {x[1]:<}", top10))
         await message.channel.send(f"```Frequencies:\n{'word':>{ns}}: {'count':<}\n" + datastr + "```")
+
+async def talkative(message):
+    """Find the n most talkative people in the last m messages in this channel
+
+    Usage talkative [n] [m]
+    - n defaults to 5
+    - m defaults to 500 and has a max of 1,000"""
+    arg = message.content.split(" ")
+    if len(arg) > 1:
+        n = int(arg[1])
+    else:
+        n = 5
+    if len(arg) > 2:
+        m = max(1000, int(arg[2]))
+    else:
+        m = 500
+    async with message.channel.typing():
+        senders = {}
+        async for m in message.channel.history(limit=m):
+            if (m.author.id in senders):
+                senders[m.author.id] += 1
+            else:
+                senders[m.author.id] = 1
+        msend = sorted([(i, senders[i]) for i in senders], key=(lambda x: x[1]), reverse=True)
+        tot = list(map(lambda x: (message.guild.get_member(x[0]), x[1]), msend[:n]))
+        tot = list(map(lambda y: ((y[0].nick or y[0].name), y[1]), tot))
+        rmax = max(len(str(n)) + 1, len("Rank"))
+        nmax = max(len(max(tot, key=(lambda x: len(x[0])))[0]), len("Name"))
+        cmax = len(str(max(tot, key=(lambda x: len(str(x[1]))))[1]))
+        hdr = f"{'Rank':>{rmax}}: {'Name':>{nmax}}: {'Messages'}\n"
+        elems = [f"{'#'+str(i+1):>{rmax}}: {tot[i][0]:>{nmax}}: {tot[i][1]:>{cmax}}" for i in range(len(tot))]
+        fmt = "```Top talkers:\n" + hdr + "\n".join(elems) + "```"
+        await message.channel.send(fmt)
