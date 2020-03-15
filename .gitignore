@@ -1,4 +1,4 @@
 .env
-Pipfile
+Pipfile.lock
 output.*
 __pycache__/
