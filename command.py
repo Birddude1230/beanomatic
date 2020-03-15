@@ -70,13 +70,13 @@ async def wordfreq(message):
     """Find the most frequent significant word in the past n messages
 
     Usage: wordfreq [n]
-    - n defaults to 200 and has a max of 1,000"""
+    - n defaults to 200 and has a max of 10,000"""
     global sr
     arg = message.content.split(" ")
     if len(arg) < 2:
         n = 1000
     else:
-        n = min(1000, int(arg[1]))
+        n = min(10000, int(arg[1]))
     async with message.channel.typing():
         tokens = []
         async for m in message.channel.history(limit=n):
@@ -98,14 +98,14 @@ async def talkative(message):
 
     Usage talkative [n] [m]
     - n defaults to 5
-    - m defaults to 500 and has a max of 1,000"""
+    - m defaults to 500 and has a max of 10,000"""
     arg = message.content.split(" ")
     if len(arg) > 1:
         n = int(arg[1])
     else:
         n = 5
     if len(arg) > 2:
-        m = max(1000, int(arg[2]))
+        m = max(10000, int(arg[2]))
     else:
         m = 500
     async with message.channel.typing():
