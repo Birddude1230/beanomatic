@@ -2,6 +2,7 @@ import os, re, json
 
 import discord
 from react import react, config_react
+from admin import checkauth, collect
 import command
 
 token = os.getenv('DISCORD_TOKEN')
@@ -40,6 +41,9 @@ async def on_message(mesg):
     global config
     global reacc
     global cmds
+    if await checkauth(mesg):
+        if mesg.content.startswith(config["prefix"]+"collect"):
+            await collect(mesg)
     if mesg.content != "" and mesg.author != mesg.guild.me:
         first = mesg.content.split()[0]
         if first in cmds and mesg.author != mesg.guild.me:

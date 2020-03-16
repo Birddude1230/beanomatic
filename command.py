@@ -4,9 +4,9 @@ async def belike(message):
     """Gets the last message user sent in this channel.
 
     Usage: belike <user>"""
-    t_name = message.content.split(" ")[1] 
+    t_name = message.content.split(" ")[1].lower()
     for pm in message.channel.members:
-        if pm.nick == t_name or pm.name == t_name:
+        if (pm.nick or pm.name).lower() == t_name:
             t_mem = pm
             break
     else:
@@ -79,7 +79,9 @@ async def wordfreq(message):
         n = min(10000, int(arg[1]))
     async with message.channel.typing():
         tokens = []
+        ctr = 0
         async for m in message.channel.history(limit=n):
+            ctr += 1
             tokens.extend([i.strip() for i in m.clean_content.split(" ") if i.strip() != ""])
 
         cleantokens = tokens[:]
@@ -91,7 +93,7 @@ async def wordfreq(message):
         names = [i[0] for i in top10]
         ns = len(max(names, key=len))
         datastr = "\n".join(map(lambda x: f"{x[0]:>{ns}}: {x[1]:<}", top10))
-        await message.channel.send(f"```Frequencies:\n{'word':>{ns}}: {'count':<}\n" + datastr + "```")
+        await message.channel.send(f"```Frequencies [read {ctr}/{n} messages]:\n{'word':>{ns}}: {'count':<}\n" + datastr + "```")
 
 async def talkative(message):
     """Find the n most talkative people in the last m messages in this channel
@@ -105,12 +107,14 @@ async def talkative(message):
     else:
         n = 5
     if len(arg) > 2:
-        m = max(10000, int(arg[2]))
+        mct = max(10000, int(arg[2]))
     else:
-        m = 500
+        mct = 500
     async with message.channel.typing():
         senders = {}
-        async for m in message.channel.history(limit=m):
+        ctr = 0
+        async for m in message.channel.history(limit=mct):
+            ctr += 1
             if m.author.id == None:
                 continue
             if (m.author.id in senders):
@@ -125,5 +129,5 @@ async def talkative(message):
         cmax = len(str(max(tot, key=(lambda x: len(str(x[1]))))[1]))
         hdr = f"{'Rank':>{rmax}}: {'Name':>{nmax}}: {'Messages'}\n"
         elems = [f"{'#'+str(i+1):>{rmax}}: {tot[i][0]:>{nmax}}: {tot[i][1]:>{cmax}}" for i in range(len(tot))]
-        fmt = "```Top talkers:\n" + hdr + "\n".join(elems) + "```"
+        fmt = f"```Top talkers [read {ctr}/{mct} messages]:\n" + hdr + "\n".join(elems) + "```"
         await message.channel.send(fmt)
