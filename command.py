@@ -107,7 +107,7 @@ async def talkative(message):
     else:
         n = 5
     if len(arg) > 2:
-        mct = max(10000, int(arg[2]))
+        mct = min(10000, int(arg[2]))
     else:
         mct = 500
     async with message.channel.typing():
