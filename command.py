@@ -17,7 +17,7 @@ async def belike(message):
         if m.author == t_mem and m.id != message.id:
             await message.channel.send(f"{m.author.nick or m.author.name} be like:\n {m.content}")
             return
-    await message.channel.send(f"**Error:** {m.author.nick or m.author.name} hasn't said anything recently enough!")
+    await message.channel.send(f"**Error:** {t_mem.nick or t_mem.name} hasn't said anything recently enough!")
 
 async def help(message):
     """Shows help, either for all commands or help and usage for a specific command.
