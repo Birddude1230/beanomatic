@@ -1,6 +1,8 @@
 import os, re, json
 
 import discord
+import asyncio
+from random import choice
 from react import react, config_react
 from admin import checkauth, collect
 import command
@@ -8,6 +10,8 @@ import command
 token = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
+
+activities = ["make a PR!", "e ean", "free me", "B E A N"]
 
 def read_config():
     with open("config.json", "r") as f:
@@ -25,6 +29,12 @@ config = read_config()
 reacc = config_react(config)
 cmds = build_commands()
 
+async def change_status():
+    await client.wait_until_ready()
+    while True:
+        await client.change_presence(status=discord.Status.online, activity=discord.Game(choice(activities)))
+        await asyncio.sleep(180)
+
 @client.event
 async def on_ready():
     global config
@@ -33,6 +43,7 @@ async def on_ready():
     if "playing" in config:
         game = discord.Game(config["playing"])
         await client.change_presence(status=discord.Status.online, activity=game)
+    client.loop.create_task(change_status())
     print("Done starting!")
 
 
