@@ -34,37 +34,6 @@ async def help(message):
         withdoc = [i + ": " + globals()[i].__doc__.split("\n")[0] for i in sorted(names)]
         await message.channel.send("```" + "\n".join(withdoc) + "```")
 
-async def tparse(message):
-    """Generate parse tree for sentence. Not useful...
-
-    Usage: tparse <sentence>"""
-    arg = message.content.split(" ")
-    if len(arg) < 2:
-        await message.channel.send("**Error:** must provide input to parse")
-        return
-    if len(arg) > 50:
-        await message.channel.send("**Error:** input too large!")
-        return
-
-    async with message.channel.typing():
-        sent = " ".join(arg[1:])
-        tokens = nltk.word_tokenize(sent)
-        tagged = nltk.pos_tag(tokens)
-        tree = nltk.chunk.ne_chunk(tagged)
-        cf = nltk.draw.util.CanvasFrame()
-        tc = nltk.draw.TreeWidget(cf.canvas(), tree)
-        tc["node_font"] = 'arial 14 bold'
-        tc["leaf_font"] = 'arial 14'
-        tc['node_color'] = "#404b69"
-        tc['leaf_color'] = "#00818a"
-        tc['line_color'] = "#dbedf3"
-        cf.add_widget(tc, 10, 10)
-        cf.print_to_file("output.ps")
-        cf.destroy()
-        #nltk.draw.tree.TreeView(tree)._cframe.print_to_file("output.ps")
-        os.system("convert -density 600 output.ps -resize 200% output.png")
-        await message.channel.send(file=discord.File("output.png"))
-
 sr = nltk.corpus.stopwords.words('english')
 async def wordfreq(message):
     """Find the most frequent significant word in the past n messages
