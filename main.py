@@ -9,7 +9,7 @@ import command
 
 token = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.all())
 
 activities = ["make a PR!", "e ean", "free me", "B E A N"]
 
