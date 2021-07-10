@@ -32,7 +32,7 @@ class CharFeaturizer(Featurizer):
         for c in range(len(mtext)):
             nr[c] = ord(mtext[c])
         nr[-1] = uid
-        if self.output = None:
+        if self.output == None:
             self.output = nr
         else:
             self.output = np.vstack([self.output, nr])
