@@ -1,5 +1,8 @@
 import os, re, json
 
+from nltk import download as ndl
+ndl('stopwords') #smart enough to check before dl
+
 import discord
 import asyncio
 from random import choice
@@ -7,7 +10,10 @@ from react import react, config_react
 from admin import checkauth, collect
 import command
 
-token = os.getenv('DISCORD_TOKEN')
+tokenfile = os.getenv('DISCORD_TOKEN_FILE')
+with open(tokenfile, 'r') as f:
+    token = f.readline().split('=')[1]
+
 
 client = discord.Client(intents=discord.Intents.all())
 
