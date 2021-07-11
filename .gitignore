@@ -3,4 +3,4 @@ Pipfile.lock
 output.*
 __pycache__/
 *.dat
-normal_file.txt
+*.txt

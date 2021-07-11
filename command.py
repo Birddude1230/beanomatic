@@ -4,7 +4,10 @@ async def belike(message):
     """Gets the last message user sent in this channel.
 
     Usage: belike <user>"""
-    t_name = message.content.split(" ")[1].lower()
+    try:
+        t_name = message.content.split(" ")[1].lower()
+    except IndexError:
+        await message.channel.send("**Error:** You must specify a name or nickname!")
     for pm in message.channel.members:
         if (pm.nick or pm.name).lower() == t_name:
             t_mem = pm
