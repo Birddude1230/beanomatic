@@ -65,6 +65,11 @@ async def on_message(mesg):
         first = mesg.content.split()[0]
         if first in cmds and mesg.author != mesg.guild.me:
             await cmds[first](mesg)
+        elif str(mesg.author.id) in config["watchusers"]:
+            thisone = config["watchusers"][str(mesg.author.id)]
+            if mesg.content == thisone["message"]:
+                resp = choice(thisone["response_parts"][0]) + ", you " + choice(thisone["response_parts"][1]) + "."
+                await mesg.channel.send(resp)
             
     await react(mesg, reacc)
 

@@ -1,6 +1,15 @@
 {
     "prefix":"b!",
     "playing":"with beano",
+    "watchusers": {
+        "639568988472606741" : {
+            "message": "who DARES call upon my name!?",
+            "response_parts": [
+                ["Oh do be quiet", "Shut up, dear", "Relax, richard"],
+                ["pile of rocks", "hunk of junk", "angry boy"]
+            ]
+        }
+    },
     "reactions":[
         {
             "name":"beano",
