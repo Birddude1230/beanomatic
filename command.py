@@ -1,4 +1,8 @@
 import nltk, os, discord, types
+import numpy as np
+from collections import Counter
+
+DISCORD_MESSAGE_SIZE = 2000
 
 async def belike(message):
     """Gets the last message user sent in this channel.
@@ -70,7 +74,7 @@ async def wordfreq(message):
 async def talkative(message):
     """Find the n most talkative people in the last m messages in this channel
 
-    Usage talkative [n] [m]
+    Usage: talkative [n] [m]
     - n defaults to 5
     - m defaults to 500 and has a max of 10,000"""
     arg = message.content.split(" ")
@@ -103,3 +107,39 @@ async def talkative(message):
         elems = [f"{'#'+str(i+1):>{rmax}}: {tot[i][0]:>{nmax}}: {tot[i][1]:>{cmax}}" for i in range(len(tot))]
         fmt = f"```Top talkers [read {ctr}/{mct} messages]:\n" + hdr + "\n".join(elems) + "```"
         await message.channel.send(fmt)
+
+async def mostmsg(msg):
+    """Find the most typical message in the last n messages, by looking at the most frequent character in each position.
+    Setting strict to `y` means 'no character' counts as a candidate for most frequent, making the message much shorter.
+
+    Usage: mostmessage [strict] [n]
+
+    - n defaults to 2000
+    - strict defaults to `n`
+    """
+    arg = msg.content.split(" ")
+    n = 2000
+    strict = False
+    if len(arg) > 1:
+        strict = (arg[1].lower() == 'y')
+        if len(arg) > 2:
+            n = int(arg[2])
+    async with msg.channel.typing():
+        total = 0
+        letters = []
+        async for m in msg.channel.history(limit=n):
+            for i in range(len(m.content)):
+                try:
+                    letters[i] += m.content[i]
+                except IndexError:
+                    assert i == len(letters), f"Tried to skip over character at position {i}!"
+                    letters.append(m.content[i])
+            total += 1
+        res = ""
+        for pos in letters:
+            cts = Counter(pos)
+            winner = max(cts, key=lambda x: cts[x])
+            if strict and cts[winner] < (total - len(pos)):
+                break
+            res += winner
+        await msg.channel.send(f"{res}\n`Polled {total}/{n} messages`")
