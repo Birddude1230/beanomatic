@@ -24,7 +24,7 @@ class Featurizer():
 
     def save(self, fname):
         with open(f"{fname}.npy","wb") as f:
-            numpy.save(f, self.output)
+            np.save(f, self.output)
 
 class CharFeaturizer(Featurizer):
     def featurize_message(self, mtext, uid):
