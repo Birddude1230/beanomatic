@@ -17,7 +17,7 @@ RUN pip install pipenv
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 # Install python dependencies in /.venv
-COPY Pipfile .
+COPY Pipfile ./
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 
@@ -35,9 +35,9 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
-COPY ./*.py .
-COPY ./Pipfile .
-COPY ./config.json .
-COPY ./normal_file.txt .
+COPY ./*.py ./
+COPY ./Pipfile ./
+COPY ./config.json ./
+COPY ./normal_file.txt ./
 
 CMD [ "python", "./main.py" ]
