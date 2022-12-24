@@ -67,8 +67,15 @@ async def on_message(mesg):
             await cmds[first](mesg)
         elif str(mesg.author.id) in config["watchusers"]:
             thisone = config["watchusers"][str(mesg.author.id)]
+            resp = None
             if mesg.content == thisone["message"]:
                 resp = choice(thisone["response_parts"][0]) + ", you " + choice(thisone["response_parts"][1]) + "."
+            elif len(mesg.embeds) == 1:
+                the_embed = mesg.embeds[0]
+                if the_embed.author.name.endswith(" has made the advancement Stone Age!"):
+                    async with mesg.channel.typing():
+                        await mesg.channel.send("ooga booga")
+            if resp:    
                 await mesg.channel.send(resp)
             
     await react(mesg, reacc)
